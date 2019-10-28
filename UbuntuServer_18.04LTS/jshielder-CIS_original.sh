@@ -289,88 +289,6 @@ apt-get remove telnet
 
 ########################################################################
 
-apt-get install iptables-persistent
-service iptables-persistent start
-
-#Port Kncoking
-#Flushing iptables 
-
-iptables -P INPUT ACCEPT
-iptables -P FORWARD ACCEPT
-iptables -P OUTPUT ACCEPT
-iptables -F
-
-#Adding ports  kocking rules
-
-iptables -N SEQUENCE
-iptables -N KNOCK1
-iptables -N KNOCK2
-iptables -N KNOCK3
-iptables -N GRANTED
-
-iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-
-#Allow all local connections  on machine
-
-iptables -A INPUT -i lo -j ACCEPT
-
-#Allow service to be accesible from internet
-
-iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -p tcp --dport 443 -j ACCEPT
-
-#Redirect unhandled conncetion to sequence chain
-
-iptables -A INPUT -j SEQUENCE
-
-#Setting up kocning ports
-
-#LEVEL 1
-
-iptables -A KNOCK1 -p tcp --dport 3389 -m recent --name LEVEL1 --set -j DROP
-
-#Drop requests after first knocking
-
-iptables -A KNOCK1 -j DROP
-
-#LEVEL 2
-
-#Remove 1st level flag
-
-iptables -A KNOCK2 -m recent --name LEVEL1 --remove
-
-iptables -A KNOCK2 -p tcp --dport 9833 -m recent --name LEVEL2 --set -j DROP
-
-#Pass packets from LEVEL 2 to LEVEL 1
-
-iptables -A KNOCK2 -j KNOCK1
-
-#LEVEL 3
-
-iptables -A KNOCK3 -m recent --name LEVEL2 --remove
-iptables -A KNOCK3 -p tcp --dport 8933 -m recent --name LEVEL3 --set -j DROP
-iptables -A KNOCK3 -j KNOCK1
-
-#Granting the access
-
-iptables -A GRANTED -m recent --name LEVEL3 --remove
-iptables -A GRANTED -p tcp --dport 3372 -j ACCEPT
-iptables -A GRANTED -j KNOCK1
-
-#Sequence time limit
-
-iptables -A SEQUENCE -m recent --rcheck --seconds 30 --name LEVEL3 -j PASSED
-
-#Time limit between levels knocking
-
-iptables -A SEQUENCE -m recent --rcheck --seconds 10 --name LEVEL2 -j KNOCK3
-iptables -A SEQUENCE -m recent --rcheck --seconds 10 --name LEVEL1 -j KNOCK2
-
-#Redirect bad traffic
-
-iptables -A SEQUENCE -j KNOCK1
-
-####################################################################################################################
 #3.3.3 Ensure IPv6 is disabled (Not Scored)
 
 sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="ipv6.disable=1"/g' /etc/default/grub
@@ -715,7 +633,6 @@ chmod 600 /etc/gshadow-
 #6.2.18 Ensure no duplicate user names exist (Scored)
 #6.2.19 Ensure no duplicate group names exist (Scored)
 #6.2.20 Ensure shadow group is empty (Scored)
-
 
 clear
 f_banner
