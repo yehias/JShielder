@@ -226,8 +226,10 @@ rsa_keygen(){
     echo "     To receive a new Instruction"
     echo " "
     echo "    RUN THE FOLLOWING COMMANDS"
-    echo -n "     a) ssh-keygen -t rsa -b 4096 "; \n ssh-keygen -t rsa -b 4096
-    echo -n "     b) cat /home/$username/.ssh/id_rsa.pub >> /home/$username/.ssh/authorized_keys "; \n cat /home/$username/.ssh/id_rsa.pub >> /home/$username/.ssh/authorized_keys
+    echo -n "     a) ssh-keygen -t rsa -b 4096 ";
+	ssh-keygen -t rsa -b 4096
+    echo -n "     b) cat /home/$username/.ssh/id_rsa.pub >> /home/$username/.ssh/authorized_keys ";
+	cat /home/$username/.ssh/id_rsa.pub >> /home/$username/.ssh/authorized_keys
     say_done
 }
 ##############################################################################################################
