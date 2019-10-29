@@ -287,6 +287,8 @@ secure_ssh(){
     spinner
     sed s/USERNAME/$username/g templates/sshd_config > /etc/ssh/sshd_config; echo "OK"
     chattr -i /home/$username/.ssh/authorized_keys
+	chmod 700 ~/.ssh/
+	chmod 600 ~/.ssh/authorized_keys
     service ssh restart
     say_done
 }

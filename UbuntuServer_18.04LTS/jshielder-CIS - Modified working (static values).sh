@@ -326,8 +326,8 @@ iptables -A INPUT -j SEQUENCE
 #Setting up kocning ports
 
 #LEVEL 1
-echo -n "Type first knocking port"; read $1stport
-iptables -A KNOCK1 -p tcp --dport $1stport -m recent --name LEVEL1 --set -j DROP
+
+iptables -A KNOCK1 -p tcp --dport 3389 -m recent --name LEVEL1 --set -j DROP
 
 #Drop requests after first knocking
 
@@ -337,20 +337,18 @@ iptables -A KNOCK1 -j DROP
 
 #Remove 1st level flag
 
-echo -n "Type second knocking port"; read $2ndport
-
 iptables -A KNOCK2 -m recent --name LEVEL1 --remove
 
-iptables -A KNOCK2 -p tcp --dport $2ndport -m recent --name LEVEL2 --set -j DROP
+iptables -A KNOCK2 -p tcp --dport 9833 -m recent --name LEVEL2 --set -j DROP
 
 #Pass packets from LEVEL 2 to LEVEL 1
 
 iptables -A KNOCK2 -j KNOCK1
 
 #LEVEL 3
-echo -n "Type third knocking port"; read $3rdport
+
 iptables -A KNOCK3 -m recent --name LEVEL2 --remove
-iptables -A KNOCK3 -p tcp --dport $3rdport -m recent --name LEVEL3 --set -j DROP
+iptables -A KNOCK3 -p tcp --dport 8933 -m recent --name LEVEL3 --set -j DROP
 iptables -A KNOCK3 -j KNOCK1
 
 #Granting the access
