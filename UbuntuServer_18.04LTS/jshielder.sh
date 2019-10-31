@@ -215,6 +215,7 @@ ssh-keygen -t rsa -b 4096 -C "comment" -P "$ssh_passphrase" -f "`pwd`/`hostname`
 mkdir /home/$username/.ssh
 touch /home/$username/.ssh/authorized_keys
 cat `pwd`/`hostname`.pub >> /home/$username/.ssh/authorized_keys
+mv  `pwd`/`hostname`* /home/$username/.ssh/
 
 #Upload private key to dropbox
 
@@ -223,7 +224,7 @@ curl -X POST https://content.dropboxapi.com/2/files/upload \
     --header "Authorization: Bearer $API_DROPBOX" \
     --header "Dropbox-API-Arg: {\"path\": \"/`hostname`\"}" \
     --header "Content-Type: application/octet-stream" \
-    --data-binary @"`pwd`/`hostname`"
+    --data-binary @"/home/$username/.ssh/`hostname`"
 	
     say_done
 }
