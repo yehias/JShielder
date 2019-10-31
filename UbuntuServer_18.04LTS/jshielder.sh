@@ -227,20 +227,34 @@ rsa_keygen(){
     echo " "
     echo "    RUN THE FOLLOWING COMMANDS"
     echo -n "     a) ssh-keygen -t rsa -b 4096 ";
-	ssh-keygen -t rsa -b 4096
+	echo -n "Type your SSH Key passphrase"; read ssh_passphrase
+	ssh-keygen -t rsa -b 4096 -C "comment" -P "$ssh_passphrase" -f "`pwd`/`hostname`" -q
     echo -n "     b) cat /home/$username/.ssh/id_rsa.pub >> /home/$username/.ssh/authorized_keys ";
-	cat /home/$username/.ssh/id_rsa.pub >> /home/$username/.ssh/authorized_keys
+	touch /home/$username/.ssh/authorized_keys
+	cat `pwd`/`hostname`.pub >> /home/$username/.ssh/authorized_keys
     say_done
 }
+#############################################################################################################
+
+
+#Upload private key to dropbox
+echo -n "Type your Dropbox app API token"; read API_DROPBOX
+curl -X POST https://content.dropboxapi.com/2/files/upload \
+    --header "Authorization: Bearer $API_DROPBOX" \
+    --header "Dropbox-API-Arg: {\"path\": \"/`hostname`\"}" \
+    --header "Content-Type: application/octet-stream" \
+    --data-binary @"`pwd`/`hostname`"
+
+
 ##############################################################################################################
 
 # Move the Generated Public Key
-rsa_keycopy(){
-    echo " Run the Following Command to copy the Key"
-    echo " Press ENTER when done "
-    echo " ssh-copy-id -i $HOME/.ssh/id_rsa.pub $username@$serverip "
-    say_done
-}
+#rsa_keycopy(){
+#    echo " Run the Following Command to copy the Key"
+#    echo " Press ENTER when done "
+#    echo " ssh-copy-id -i $HOME/.ssh/id_rsa.pub $username@$serverip "
+#    say_done
+#}
 ##############################################################################################################
 
 #Securing /tmp Folder
