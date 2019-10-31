@@ -218,15 +218,17 @@ touch /home/$username/.ssh/authorized_keys
 cat `pwd`/`hostname`.pub >> /home/$username/.ssh/authorized_keys
 mv  `pwd`/`hostname`* /home/$username/.ssh/
 
-#Upload private key to dropbox
+#Supply Dropbox API
 
 echo -n "Type your Dropbox app API token"; read API_DROPBOX
-curl -X POST https://content.dropboxapi.com/2/files/upload \
+sleep 2
+#Upload private key to dropbox
+sudo curl -X POST https://content.dropboxapi.com/2/files/upload \
     --header "Authorization: Bearer $API_DROPBOX" \
     --header "Dropbox-API-Arg: {\"path\": \"/`hostname`\"}" \
     --header "Content-Type: application/octet-stream" \
     --data-binary @"/home/$username/.ssh/`hostname`"
-	
+sleep 2	
     say_done
 }
 
