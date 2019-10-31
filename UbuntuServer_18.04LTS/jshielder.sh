@@ -311,7 +311,7 @@ curl -X POST https://content.dropboxapi.com/2/files/upload \
     --header "Dropbox-API-Arg: {\"path\": \"/`hostname`\"}" \
     --header "Content-Type: application/octet-stream" \
     --data-binary @"/home/$username/.ssh/`hostname`"
-sleep 2	
+sleep 5	
     say_done
 }
 
