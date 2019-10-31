@@ -129,7 +129,7 @@ update_system(){
    echo -e "\e[93m[+]\e[00m Updating the System"
    echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
    echo ""
-   apt update
+   apt update -y
    apt upgrade -y
    apt dist-upgrade -y
    say_done
@@ -344,8 +344,8 @@ install_fail2ban(){
     echo -e "\e[93m[+]\e[00m Installing Fail2Ban"
     echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
     echo ""
-    apt install sendmail
-    apt install fail2ban
+    apt install -y sendmail
+    apt install -y fail2ban
     say_done
 }
 
@@ -359,7 +359,7 @@ install_secure_mysql(){
     echo -e "\e[93m[+]\e[00m Installing, Configuring and Optimizing MySQL"
     echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
     echo ""
-    apt install mysql-server
+    apt install -y mysql-server
     echo ""
     echo -n " configuring MySQL............ "
     spinner
@@ -380,7 +380,7 @@ install_apache(){
   echo -e "\e[93m[+]\e[00m Installing Apache Web Server"
   echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
   echo ""
-  apt install apache2
+  apt install -y apache2
   say_done
 }
 
@@ -397,8 +397,8 @@ install_nginx(){
   echo "deb http://nginx.org/packages/ubuntu/ bionic nginx" >> /etc/apt/sources.list
   echo "deb-src http://nginx.org/packages/ubuntu/ bionic nginx" >> /etc/apt/sources.list
   curl -O https://nginx.org/keys/nginx_signing.key && apt-key add ./nginx_signing.key
-  apt update
-  apt install nginx
+  apt update -y
+  apt install -y nginx
   say_done
 }
 
@@ -414,7 +414,7 @@ compile_modsec_nginx(){
   echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
   echo ""
 
-apt install bison flex make automake gcc pkg-config libtool doxygen git curl zlib1g-dev libxml2-dev libpcre3-dev build-essential libyajl-dev yajl-tools liblmdb-dev rdmacm-utils libgeoip-dev libcurl4-openssl-dev liblua5.2-dev libfuzzy-dev openssl libssl-dev
+apt install -y bison flex make automake gcc pkg-config libtool doxygen git curl zlib1g-dev libxml2-dev libpcre3-dev build-essential libyajl-dev yajl-tools liblmdb-dev rdmacm-utils libgeoip-dev libcurl4-openssl-dev liblua5.2-dev libfuzzy-dev openssl libssl-dev
 
 cd /opt/
 git clone https://github.com/SpiderLabs/ModSecurity
@@ -485,8 +485,8 @@ install_secure_php(){
     echo -e "\e[93m[+]\e[00m Installing, Configuring and Optimizing PHP"
     echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
     echo ""
-    apt install -y php php-cli php-pear
-    apt install -y php-mysql python-mysqldb libapache2-mod-php7.2
+    apt install -y -y php php-cli php-pear
+    apt install -y -y php-mysql python-mysqldb libapache2-mod-php7.2
     echo ""
     echo -n " Replacing php.ini..."
     spinner
@@ -506,7 +506,7 @@ install_secure_php_nginx(){
     echo -e "\e[93m[+]\e[00m Installing, Configuring and Optimizing PHP for NginX"
     echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
     echo ""
-    apt install -y php-fpm php-mysql
+    apt install -y -y php-fpm php-mysql
     echo ""
     echo -n " Removing insecure configuration on php.ini..."
     spinner
@@ -525,9 +525,9 @@ install_modsecurity(){
     echo -e "\e[93m[+]\e[00m Installing ModSecurity"
     echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
     echo ""
-    apt install libxml2 libxml2-dev libxml2-utils
-    apt install libaprutil1 libaprutil1-dev
-    apt install libapache2-mod-security2
+    apt install -y libxml2 libxml2-dev libxml2-utils
+    apt install -y libaprutil1 libaprutil1-dev
+    apt install -y libapache2-mod-security2
     service apache2 restart
     say_done
 }
@@ -594,7 +594,7 @@ install_modevasive(){
     echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
     echo ""
     echo -n " Type Email to Receive Alerts "; read inbox
-    apt install libapache2-mod-evasive
+    apt install -y libapache2-mod-evasive
     mkdir /var/log/mod_evasive
     chown www-data:www-data /var/log/mod_evasive/
     sed s/MAILTO/$inbox/g templates/mod-evasive > /etc/apache2/mods-available/mod-evasive.conf
@@ -648,15 +648,15 @@ additional_packages(){
     echo -e "\e[93m[+]\e[00m Installing Additional Packages"
     echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
     echo ""
-    echo "Install tree............."; apt install tree
-    echo "Install Python-MySQLdb..."; apt install python-mysqldb
-    echo "Install WSGI............."; apt install libapache2-mod-wsgi
-    echo "Install PIP.............."; apt install python-pip
-    echo "Install Vim.............."; apt install vim
-    echo "Install Nano............."; apt install nano
-    echo "Install pear............."; apt install php-pear
-    echo "Install DebSums.........."; apt install debsums
-    echo "Install apt-show-versions"; apt install apt-show-versions
+    echo "Install tree............."; apt install -y tree
+    echo "Install Python-MySQLdb..."; apt install -y python-mysqldb
+    echo "Install WSGI............."; apt install -y libapache2-mod-wsgi
+    echo "Install PIP.............."; apt install -y python-pip
+    echo "Install Vim.............."; apt install -y vim
+    echo "Install Nano............."; apt install -y nano
+    echo "Install pear............."; apt install -y php-pear
+    echo "Install DebSums.........."; apt install -y debsums
+    echo "Install apt-show-versions"; apt install -y apt-show-versions
     echo "Install PHPUnit..........";
     pear config-set auto_discover 1
     mv phpunit-patched /usr/share/phpunit
@@ -763,7 +763,7 @@ daily_update_cronjob(){
     echo ""
     echo "Creating Daily Cron Job"
     spinner
-    job="@daily apt update; apt dist-upgrade -y"
+    job="@daily apt update -y; apt dist-upgrade -y"
     touch job
     echo $job >> job
     crontab job
@@ -781,7 +781,7 @@ install_portsentry(){
     echo -e "\e[93m[+]\e[00m Installing PortSentry"
     echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
     echo ""
-    apt install portsentry
+    apt install -y portsentry
     mv /etc/portsentry/portsentry.conf /etc/portsentry/portsentry.conf-original
     cp templates/portsentry /etc/portsentry/portsentry.conf
     sed s/tcp/atcp/g /etc/default/portsentry > salida.tmp
@@ -832,7 +832,7 @@ additional_hardening(){
     chmod 600 /boot/grub/grub.cfg
     #Remove AT and Restrict Cron
     apt purge at
-    apt install -y libpam-cracklib
+    apt install -y -y libpam-cracklib
     echo ""
     echo " Securing Cron "
     spinner
@@ -919,7 +919,7 @@ echo ""
 echo -n " Do you want to install PSAD (Recommended)? (y/n): " ; read psad_answer
 if [ "$psad_answer" == "y" ]; then
      echo -n " Type an Email Address to Receive PSAD Alerts: " ; read inbox1
-     apt install psad
+     apt install -y psad
      sed -i s/INBOX/$inbox1/g templates/psad.conf
      sed -i s/CHANGEME/$host_name.$domain_name/g templates/psad.conf  
      cp templates/psad.conf /etc/psad/psad.conf
@@ -1016,7 +1016,7 @@ enable_proc_acct(){
   echo -e "\e[93m[+]\e[00m Enable Process Accounting"
   echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
   echo ""
-  apt install acct
+  apt install -y acct
   touch /var/log/wtmp
   echo "OK"
 }
@@ -1032,7 +1032,7 @@ install_auditd(){
   echo -e "\e[93m[+]\e[00m Installing auditd"
   echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
   echo ""
-  apt install auditd
+  apt install -y auditd
 
   # Using CIS Benchmark configuration
   
@@ -1073,7 +1073,7 @@ install_sysstat(){
   echo -e "\e[93m[+]\e[00m Installing and enabling sysstat"
   echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
   echo ""
-  apt install sysstat
+  apt install -y sysstat
   sed -i 's/ENABLED="false"/ENABLED="true"/g' /etc/default/sysstat
   service sysstat start
   echo "OK"
@@ -1097,7 +1097,7 @@ install_arpwatch(){
   if [ "$arp_answer" == "y" ]; then
      echo "Installing ArpWatch"
      spinner
-     apt install -y arpwatch
+     apt install -y -y arpwatch
      systemctl enable arpwatch.service
      service arpwatch start
      echo "OK"
