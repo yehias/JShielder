@@ -211,6 +211,89 @@ admin_user(){
 	
 #Secure SSH
 
+apt-get install iptables-persistent
+service iptables-persistent start
+
+#Port Kncoking
+#Flushing iptables 
+
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -F
+
+#Adding ports  kocking rules
+
+iptables -N SEQUENCE
+iptables -N KNOCK1
+iptables -N KNOCK2
+iptables -N KNOCK3
+iptables -N GRANTED
+
+iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+#Allow all local connections  on machine
+
+iptables -A INPUT -i lo -j ACCEPT
+
+#Allow service to be accesible from internet
+
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
+#Redirect unhandled conncetion to sequence chain
+
+iptables -A INPUT -j SEQUENCE
+
+#Setting up kocning ports
+
+#LEVEL 1
+echo -n "Type first knocking port"; read port1
+iptables -A KNOCK1 -p tcp --dport $port1 -m recent --name LEVEL1 --set -j DROP
+
+#Drop requests after first knocking
+
+iptables -A KNOCK1 -j DROP
+
+#LEVEL 2
+
+#Remove 1st level flag
+
+echo -n "Type second knocking port"; read port2
+
+iptables -A KNOCK2 -m recent --name LEVEL1 --remove
+
+iptables -A KNOCK2 -p tcp --dport $port2 -m recent --name LEVEL2 --set -j DROP
+
+#Pass packets from LEVEL 2 to LEVEL 1
+
+iptables -A KNOCK2 -j KNOCK1
+
+#LEVEL 3
+echo -n "Type third knocking port"; read port3
+iptables -A KNOCK3 -m recent --name LEVEL2 --remove
+iptables -A KNOCK3 -p tcp --dport $port3 -m recent --name LEVEL3 --set -j DROP
+iptables -A KNOCK3 -j KNOCK1
+
+#Granting the access
+
+iptables -A GRANTED -m recent --name LEVEL3 --remove
+iptables -A GRANTED -p tcp --dport 3372 -j ACCEPT
+iptables -A GRANTED -j KNOCK1
+
+#Sequence time limit
+
+iptables -A SEQUENCE -m recent --rcheck --seconds 30 --name LEVEL3 -j PASSED
+
+#Time limit between levels knocking
+
+iptables -A SEQUENCE -m recent --rcheck --seconds 10 --name LEVEL2 -j KNOCK3
+iptables -A SEQUENCE -m recent --rcheck --seconds 10 --name LEVEL1 -j KNOCK2
+
+#Redirect bad traffic
+
+iptables -A SEQUENCE -j KNOCK1
+
 echo -n "Type your SSH Key passphrase"; read ssh_passphrase
 ssh-keygen -t rsa -b 4096 -C "comment" -P "$ssh_passphrase" -f "`pwd`/`hostname`" -q
 mkdir /home/$username/.ssh
