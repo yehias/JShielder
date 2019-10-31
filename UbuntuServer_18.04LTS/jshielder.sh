@@ -34,7 +34,8 @@ echo "
 ╚════╝ ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚═════╝ ╚══════╝╚═╝  ╚═╝
 
 For Ubuntu Server 18.04 LTS
-Developed By Jason Soto @Jsitech"
+Developed By Jason Soto @Jsitech
+Modded by Yehia Serrieh"
 echo
 echo
 
