@@ -372,24 +372,6 @@ iptables -A SEQUENCE -m recent --rcheck --seconds 10 --name LEVEL1 -j KNOCK2
 
 iptables -A SEQUENCE -j KNOCK1
 
-###################################################################################################################
-#Secure SSH
-
-echo -n "Type your SSH Key passphrase"; read ssh_passphrase
-ssh-keygen -t rsa -b 4096 -C "comment" -P "$ssh_passphrase" -f "`pwd`/`hostname`" -q
-touch /home/$username/.ssh/authorized_keys
-cat `pwd`/`hostname`.pub >> /home/$username/.ssh/authorized_keys
-
-#############################################################################################################
-#Upload private key to dropbox
-
-echo -n "Type your Dropbox app API token"; read API_DROPBOX
-curl -X POST https://content.dropboxapi.com/2/files/upload \
-    --header "Authorization: Bearer $API_DROPBOX" \
-    --header "Dropbox-API-Arg: {\"path\": \"/`hostname`\"}" \
-    --header "Content-Type: application/octet-stream" \
-    --data-binary @"`pwd`/`hostname`"
-
 ####################################################################################################################
 #3.3.3 Ensure IPv6 is disabled (Not Scored)
 
