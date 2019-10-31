@@ -212,6 +212,7 @@ admin_user(){
 
 echo -n "Type your SSH Key passphrase"; read ssh_passphrase
 ssh-keygen -t rsa -b 4096 -C "comment" -P "$ssh_passphrase" -f "`pwd`/`hostname`" -q
+mkdir /home/$username/.ssh
 touch /home/$username/.ssh/authorized_keys
 cat `pwd`/`hostname`.pub >> /home/$username/.ssh/authorized_keys
 
