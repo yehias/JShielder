@@ -300,6 +300,7 @@ mkdir /home/$username/.ssh
 touch /home/$username/.ssh/authorized_keys
 cat `pwd`/`hostname`.pub >> /home/$username/.ssh/authorized_keys
 mv  `pwd`/`hostname` /home/$username/`hostname`.txt
+chmod 777 /home/$username/`hostname`.txt
 
 #Supply Dropbox API
 
