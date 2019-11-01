@@ -307,7 +307,7 @@ echo -n "Type your Dropbox app API token"; read API_DROPBOX
 sleep 2
 #Upload private key to dropbox
 curl -X POST https://content.dropboxapi.com/2/files/upload \
-    --header "Authorization: Bearer PCUsouQ0s2AAAAAAAAAANxKDopZnUXb9kw8_e_sdYlJnmRDOMHBeCPXjhbbqJlyf" \
+    --header "Authorization: Bearer $API_DROPBOX" \
     --header "Dropbox-API-Arg: {\"path\": \"/`hostname`\"}" \
     --header "Content-Type: application/octet-stream" \
     --data-binary @"/home/$username/`hostname`.txt"
