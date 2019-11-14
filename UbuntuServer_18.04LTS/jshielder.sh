@@ -220,7 +220,6 @@ service iptables-persistent start
 iptables -P INPUT ACCEPT
 iptables -P FORWARD ACCEPT
 iptables -P OUTPUT ACCEPT
-iptables -F
 
 #Adding ports  kocking rules
 
